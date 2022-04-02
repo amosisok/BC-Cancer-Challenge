@@ -6,10 +6,7 @@ class Server {
     }
 
     changeWorkload(value) {
-
-        if(isNaN(value)) {
-            return;
-        }
+        if(isNaN(value)) return;
 
         if(value >= 0 && value < Number.MAX_SAFE_INTEGER) {
             this.workload = value;
@@ -26,6 +23,10 @@ class Server {
 
     getWorkload() {
         return this.workload;
+    }
+
+    getServers() {
+        return this.servers;
     }
 }
 
