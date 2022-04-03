@@ -25,12 +25,12 @@ function CreateServers() {
 
     if(newWorkload && positiveNumbers.test(newWorkload)) {
       switch(serverName) {
-        case 'A':
+        case 'workloadA':
           serverA.changeWorkload(newWorkload);
           setWorkloadA(newWorkload);
           break;
 
-        case 'B':
+        case 'workloadB':
           serverB.changeWorkload(newWorkload);
           setWorkloadB(newWorkload);
           break;
@@ -42,7 +42,6 @@ function CreateServers() {
     <div>
       <p>server A workload: {serverAWorkload}</p>
       <input id='workloadA' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
-
       <p>server B workload: {serverBWorkload}</p>
       <input id='workloadB' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
 
