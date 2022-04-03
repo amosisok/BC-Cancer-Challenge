@@ -2,8 +2,12 @@ import './ServerLayout.css';
 import React, { useState, useEffect } from 'react';
 
 function DrawServers(props) {
-    const [sourceServer, setSourceServer] = useState({ x: 0, y: 0});
-    // const [targetServer, setTargetServer] = useState({ x: 0, y: 0});
+    const [sourceServer, setSourceServer] = useState({name: '', x: 0, y: 0});
+    const [serverList, setServers] = useState(props.servers);
+
+    useEffect(() => {
+        setServers(props.servers);
+    })
 
     function handleServerClick(event) {
         var servers = document.getElementsByClassName("server");
@@ -12,10 +16,19 @@ function DrawServers(props) {
         if(sourceServer.x == 0 && sourceServer.y == 0) {
             let sourceX, sourceY;
             [sourceX, sourceY] = getCoordinates(event.currentTarget.id);
-            setSourceServer({x: sourceX, y: sourceY});
+            setSourceServer({name: event.currentTarget.id, x: sourceX, y: sourceY});
+            
+            let currentServerObj;
+            for(let i = 0; i < serverList.length; i++) {
+               if(serverList[i].getName() === event.currentTarget.id) {
+                    currentServerObj = serverList[i];
+               }
+            }
+
+            let connectedServers = currentServerObj.getServers().map(elem => elem.name);
 
             for(let server of servers) {
-                if(server.id !== event.currentTarget.id) {
+                if(server.id !== event.currentTarget.id && !connectedServers.includes(server.id)) {
                     server.style.animation = "blink .5s step-end infinite alternate";
                 }
             }
@@ -27,60 +40,78 @@ function DrawServers(props) {
             [targetX, targetY] = getCoordinates(event.currentTarget.id);
 
             document.body.appendChild(createLine(sourceServer.x, sourceServer.y, targetX, targetY));
-            setSourceServer({x:0, y:0});
 
             for(let server of servers) {
                 server.style.animation = "";
             }
+            
+            // Add selected server to source server's list of servers
+            var source, target;
+            for(let i = 0; i < serverList.length; i++) {
+                if(serverList[i].getName().toLowerCase() == sourceServer.name.toLowerCase()) {
+                    source = serverList[i];
+                }
+
+                else if(serverList[i].getName().toLowerCase() == event.currentTarget.id.toLowerCase()) {
+                    target = serverList[i];
+                }
+            }
+
+            if(target) {
+                source.connectServer(target);
+                props.updateServers(serverList);
+            }
+
+            setSourceServer({name: '', x:0, y:0});
         }
     }
 
     return (
         <div>
             <div className='row'>
-                <div id='serverB' className="server" onClick={handleServerClick}>
+                <div id='ServerB' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>B</p>
-                        {props.workloadB}
+                        {serverList[1].getWorkload()}
                     </div>
                 </div>
             </div>
 
             <div className='doubleRow'>
-                <div id='serverA' className="server" onClick={handleServerClick}>
+                <div id='ServerA' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>A</p>
-                        {props.workloadA}
+                        {serverList[0].getWorkload()}
                     </div>
                 </div>
-                <div id='serverC' className="server" onClick={handleServerClick}>
+                <div id='ServerC' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>C</p>
-                        {props.workloadC}
+                        {serverList[2].getWorkload()}
                     </div>
                 </div>
             </div>
 
             <div className='doubleRow'>
-                <div id='serverF' className="server" onClick={handleServerClick}>
+                <div id='ServerF' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>F</p>
-                        {props.workloadF}
+                        {serverList[5].getWorkload()}
                     </div>
                 </div>
-                <div id='serverD' className="server" onClick={handleServerClick}>
+                <div id='ServerD' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>D</p>
-                        {props.workloadD}
+                        {serverList[4].getWorkload()}
                     </div>
                 </div>
             </div>
 
             <div className='row'>
-                <div id='serverE' className="server" onClick={handleServerClick}>
+                <div id='ServerE' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>E</p>
-                        {props.workloadE}
+                        {serverList[4].getWorkload()}
                     </div>
                 </div>
             </div>

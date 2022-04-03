@@ -28,6 +28,10 @@ class Server {
     getServers() {
         return this.servers;
     }
+
+    getName() {
+        return this.name;
+    }
 }
 
 export default Server;
