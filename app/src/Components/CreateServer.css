@@ -1,8 +1,10 @@
 .form {
     display: inline-block;
     margin-left: 4rem;
+    width: 9.3rem;
+    max-width: 9.3rem;
 }
 
 .workLoadInputs {
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
 }

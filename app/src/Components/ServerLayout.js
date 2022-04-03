@@ -1,5 +1,6 @@
 import './ServerLayout.css';
 import React, { useState, useEffect } from 'react';
+import Server from './Server';
 
 function DrawServers(props) {
     const [sourceServer, setSourceServer] = useState({name: '', x: 0, y: 0});
@@ -11,24 +12,24 @@ function DrawServers(props) {
 
     function handleServerClick(event) {
         var servers = document.getElementsByClassName("server");
-
+        var currentServerObj, targetServerObj, sourceConnectedServers, targetConnectedServers;
+        
         //Begin server selection by choosing source server
         if(sourceServer.x == 0 && sourceServer.y == 0) {
             let sourceX, sourceY;
             [sourceX, sourceY] = getCoordinates(event.currentTarget.id);
             setSourceServer({name: event.currentTarget.id, x: sourceX, y: sourceY});
             
-            let currentServerObj;
             for(let i = 0; i < serverList.length; i++) {
                if(serverList[i].getName() === event.currentTarget.id) {
                     currentServerObj = serverList[i];
                }
             }
 
-            let connectedServers = currentServerObj.getServers().map(elem => elem.name);
+            sourceConnectedServers = currentServerObj.getServers().map(elem => elem.name);
 
             for(let server of servers) {
-                if(server.id !== event.currentTarget.id && !connectedServers.includes(server.id)) {
+                if(server.id !== event.currentTarget.id && !sourceConnectedServers.includes(server.id)) {
                     server.style.animation = "blink .5s step-end infinite alternate";
                 }
             }
@@ -36,29 +37,68 @@ function DrawServers(props) {
 
         //choosing the server to connect to
         else if(sourceServer.x != 0 && sourceServer.y != 0) {
+
+            var source, target;
+            for(let i = 0; i < serverList.length; i++) {
+                if(serverList[i].getName() == sourceServer.name) {
+                    source = serverList[i];
+                    currentServerObj = serverList[i];
+                }
+
+                else if(serverList[i].getName() == event.currentTarget.id) {
+                    target = serverList[i];
+                    targetServerObj = serverList[i];
+                }
+            }
+
             let targetX, targetY;
             [targetX, targetY] = getCoordinates(event.currentTarget.id);
 
-            document.body.appendChild(createLine(sourceServer.x, sourceServer.y, targetX, targetY));
+            document.body.appendChild(drawLine(sourceServer.x, sourceServer.y, targetX, targetY));
 
             for(let server of servers) {
                 server.style.animation = "";
             }
             
             // Add selected server to source server's list of servers
-            var source, target;
-            for(let i = 0; i < serverList.length; i++) {
-                if(serverList[i].getName().toLowerCase() == sourceServer.name.toLowerCase()) {
-                    source = serverList[i];
-                }
 
-                else if(serverList[i].getName().toLowerCase() == event.currentTarget.id.toLowerCase()) {
-                    target = serverList[i];
-                }
+            sourceConnectedServers = currentServerObj.getServers().map(elem => elem.name);
+            if(targetServerObj) {
+                targetConnectedServers = targetServerObj.getServers().map(elem => elem.name);
             }
 
-            if(target) {
+            if(target && !sourceConnectedServers.includes(target.getName())) {
+
+                //connect source to all of the targets connected servers
+
                 source.connectServer(target);
+                target.connectServer(source);
+
+                // for each of b's connections, excluding b and any already connected servers, connect them to c
+                for(let server of currentServerObj.getServers()) {
+                    // if(server.getName() !== currentServerObj.getName() && !targetConnectedServers.includes(server.getName())) {
+                        server.connectServer(target);
+                        target.connectServer(server);
+                    // }
+                }
+
+
+                // // for each of c's connections, connect them to b's connections
+                for(let targetsConnection of target.getServers()) {
+                    for(let sourcesConnection of source.getServers()) {
+                        // if(!sourceConnectedServers.includes(targetsConnection.getName() && targetsConnection.getName() !== target.getName())) {
+                            targetsConnection.connectServer(sourcesConnection);
+                        // }
+
+                        // if(!targetConnectedServers.includes(sourcesConnection.getName() && sourcesConnection.getName() !== source.getName())) {
+                            sourcesConnection.connectServer(targetsConnection);
+                        // }
+                    }
+                    source.connectServer(targetsConnection);
+                    targetsConnection.connectServer(source);
+                }
+
+                source.rebalanceWorkload();
                 props.updateServers(serverList);
             }
 
@@ -102,7 +142,7 @@ function DrawServers(props) {
                 <div id='ServerD' className="server" onClick={handleServerClick}>
                     <div className='workload'>
                         <p>D</p>
-                        {serverList[4].getWorkload()}
+                        {serverList[3].getWorkload()}
                     </div>
                 </div>
             </div>
@@ -129,20 +169,23 @@ function getCoordinates(id) {
     var temp = document.getElementById(id);
     if(temp) {
         var rect = temp.getBoundingClientRect();
-        return [rect.left + (rect.right-rect.left)/2, rect.top + (rect.bottom - rect.top)/2];
+        return [rect.left + (rect.right - rect.left)/2, rect.top + (rect.bottom - rect.top)/2];
     }
 }
 
 /*
-The functions createLineElement() and createLine() are used to draw
+The functions createLineElement() and drawLine() are used to draw
 lines between the servers. 
-Based on code from: https://stackoverflow.com/questions/4270485/drawing-lines-on-html-page, answer 1, by user madox2
+Source: https://stackoverflow.com/questions/4270485/drawing-lines-on-html-page, answer 1, by user madox2
 */
 function createLineElement(x, y, length, angle) {
     var line = document.createElement("div");
     var styles = 'border: 1px solid black; '
                + 'width: ' + length + 'px; '
                + '-moz-transform: rotate(' + angle + 'rad); ' 
+               + '-webkit-transform: rotate(' + angle + 'rad); '
+               + '-o-transform: rotate(' + angle + 'rad); '  
+               + '-ms-transform: rotate(' + angle + 'rad); '  
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '
@@ -152,13 +195,13 @@ function createLineElement(x, y, length, angle) {
     return line;
   }
   
-  function createLine(x1, y1, x2, y2) {
+  function drawLine(x1, y1, x2, y2) {
     var a = x1 - x2;
     var b = y1 - y2;
-    var c = Math.sqrt(a * a + b * b);
+    var c = Math.sqrt(a*a + b*b);
   
-    var slopeX = (x1 + x2) / 2;
-    var slopeY = (y1 + y2) / 2;
+    var slopeX = (x1 + x2)/2;
+    var slopeY = (y1 + y2)/2;
   
     var x = slopeX - c / 2;
     var y = slopeY;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ServerLayout from './ServerLayout.js';
 import './CreateServer.css';
+import * as Constants from '../Constants/Constants.js';
 
 function CreateServers(props) {
 
@@ -19,7 +20,7 @@ function CreateServers(props) {
     function onWorkloadChange(event) {
       let serverName = event.currentTarget.id;
   
-      const positiveNumbers = /^[0-9\b]+$/;
+      const positiveNumbers = new RegExp(Constants.WORKLOAD_REGEX);
       let newWorkload = event.currentTarget.value;
   
       if(serverList && newWorkload && positiveNumbers.test(newWorkload)) {
@@ -67,33 +68,33 @@ function CreateServers(props) {
       <div>
         <div className='workLoadInputs'>
             <div className='form'>
-                <p>server A workload: {serverAWorkload}</p>
-                <input id='workloadA' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p>Server A workload: {serverAWorkload}</p>
+                <input id='workloadA' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
 
             <div className='form'>
-                <p>server B workload: {serverBWorkload}</p>
-                <input id='workloadB' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p>Server B workload: {serverBWorkload}</p>
+                <input id='workloadB' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
 
             <div className='form'>
-                <p>server C workload: {serverCWorkload}</p>
-                <input id='workloadC' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p>Server C workload: {serverCWorkload}</p>
+                <input id='workloadC' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
 
             <div className='form'>
-                <p >server D workload: {serverDWorkload}</p>
-                <input id='workloadD' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p >Server D workload: {serverDWorkload}</p>
+                <input id='workloadD' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
 
             <div className='form'>
-                <p>server E workload: {serverEWorkload}</p>
-                <input id='workloadE' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p>Server E workload: {serverEWorkload}</p>
+                <input id='workloadE' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
 
             <div className='form'>
-                <p>server F workload: {serverFWorkload}</p>
-                <input id='workloadF' onChange={onWorkloadChange} type='number' min='0' max={Number.MAX_SAFE_INTEGER}></input>
+                <p>Server F workload: {serverFWorkload}</p>
+                <input id='workloadF' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
             </div>
         </div>
   
