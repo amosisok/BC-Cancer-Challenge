@@ -49,7 +49,7 @@ class Server {
     We then calculate the remainder and then evenly distribute it among the servers, starting from the first.
     
     If the remainder is 0, there is nothing to distribute so we can set the workload of all servers to the starting workload.
-    Otherwise, we distribute it by simply adding 1 to each of the servers until the remainder is all used up.
+    Otherwise, we distribute it by simply adding 1 to each of the server's workload until the remainder is all used up.
     When this is complete, we have a balanced workload for all connected servers.
     
     */

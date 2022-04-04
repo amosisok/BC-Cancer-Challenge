@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import ServerLayout from './ServerLayout.js';
-import './CreateServer.css';
+import React, { useState} from 'react';
+import './Workload.css';
 import * as Constants from '../Constants/Constants.js';
+import ServerLayout from './ServerLayout.js';
 
-function CreateServers(props) {
+
+function Workload(props) {
 
     const [serverAWorkload, setWorkloadA] = useState(0);
     const [serverBWorkload, setWorkloadB] = useState(0);
@@ -12,10 +13,6 @@ function CreateServers(props) {
     const [serverEWorkload, setWorkloadE] = useState(0);
     const [serverFWorkload, setWorkloadF] = useState(0);
     const [serverList, setServers] = useState(props.servers);
-
-    useEffect(() => {
-        setServers(props.servers);
-    })
 
     function onWorkloadChange(event) {
         let serverName = event.currentTarget.id;
@@ -27,6 +24,11 @@ function CreateServers(props) {
             newWorkload = 0;
         }
 
+        /* 
+        I realize that there is a lot of repeated code here and this will not scale well with many servers,
+        but I was unable find another way to call hooks dynamically. Since there were only 6 servers, I decided
+        to settle with this approach.
+        */
         if(serverList && workloadFormat.test(newWorkload)) {
             switch(serverName) {
                 case 'workloadA':
@@ -102,9 +104,9 @@ function CreateServers(props) {
                 </div>
             </div>
 
-            <ServerLayout servers={props.servers} updateServers={onServerUpdate}></ServerLayout>
+            <ServerLayout servers={serverList} updateServers={onServerUpdate}></ServerLayout>
         </div>
     );
 }
 
-export default CreateServers;
+export default Workload;

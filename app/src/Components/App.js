@@ -1,6 +1,7 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import Server from './Server.js';
-import CreateServers from './CreateServer.js'
+import Workload from './Workload.js'
+import ServerLayout from './ServerLayout.js';
 
 function App() {
   var serverA = new Server('ServerA', 0, []);
@@ -16,10 +17,15 @@ function App() {
   const [servers, setServerList] = useState(serverList);
 
   function onServerUpdate(childData) {
+    console.log(childData)
     setServerList(childData);
   }
-
-  return <CreateServers servers={servers} updateServers={onServerUpdate}/>;
+  return (
+    <div>
+      <Workload servers={servers} updateServers={onServerUpdate}/>
+      {/* <ServerLayout servers={servers} updateServers={onServerUpdate}></ServerLayout> */}
+    </div>
+  );
 }
 
 export default App;
