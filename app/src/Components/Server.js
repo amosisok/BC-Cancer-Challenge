@@ -82,7 +82,6 @@ class Server {
                 }
             }
         }
-
         this.setWorkload(quotient);
     }
 }

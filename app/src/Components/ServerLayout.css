@@ -17,13 +17,13 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
   }
 
   .doubleRow {
     display: flex;
     justify-content: center;
-    margin-bottom: 5rem;
+    margin-bottom: 4rem;
     gap: 25rem;
   }
 

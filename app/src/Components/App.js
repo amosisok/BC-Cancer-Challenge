@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import Server from './Server.js';
 import CreateServers from './CreateServer.js'
 
@@ -16,7 +16,6 @@ function App() {
   const [servers, setServerList] = useState(serverList);
 
   function onServerUpdate(childData) {
-    // console.log(childData)
     setServerList(childData);
   }
 
