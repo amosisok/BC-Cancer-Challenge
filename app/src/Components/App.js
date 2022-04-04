@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import Server from './Server.js';
 import Workload from './Workload.js'
 import ServerLayout from './ServerLayout.js';

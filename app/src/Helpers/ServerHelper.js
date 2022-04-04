@@ -1,7 +1,7 @@
 /*
 getBoundingClientRect() returns an object that gives us the size and position of an element.
+Using it, we return the X,Y coordinates of the middle of the element.
 https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-We return the X-Y coordinates of the middle of the element
 */
 function getCoordinates(id) {
     var temp = document.getElementById(id);

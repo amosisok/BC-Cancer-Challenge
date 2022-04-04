@@ -1,5 +1,5 @@
 import './ServerLayout.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getCoordinates, drawLine } from '../Helpers/ServerHelper.js';
 
 function DrawServers(props) {
@@ -31,7 +31,7 @@ function DrawServers(props) {
             }
         }
 
-        //choosing the server to connect to
+        //Choosing the target server
         else if(sourceServer.x != 0 && sourceServer.y != 0) {
 
             var source, target;
@@ -45,7 +45,6 @@ function DrawServers(props) {
                 }
             }
 
-            //We can only connect to a server that is flashing blue. Click again on source server to cancel connection.
             if(event.currentTarget.style.animation === '' && event.currentTarget.id !== source.getName()) {
                 return;
             }
@@ -59,23 +58,23 @@ function DrawServers(props) {
                 server.style.animation = "";
             }
             
-            // Add selected server to source server's list of servers
             sourceConnectedServers = source.getServers().map(elem => elem.name);
             if(target) {
                 targetConnectedServers = target.getServers().map(elem => elem.name);
             }
 
+            // Add target server to source server's list of servers
             if(target && !sourceConnectedServers.includes(target.getName())) {
                 source.connectServer(target);
                 target.connectServer(source);
 
-                // for each of source's connections, excluding itself and any already connected servers, connect them to the target
+                // For each of the source's connections, excluding itself and any already connected servers, connect them to the target
                 for(let server of source.getServers()) {
                     server.connectServer(target);
                     target.connectServer(server);
                 }
 
-                //for each of the target's connections, connect them to each of the source's connections
+                //For each of the target's connections, connect them to each of the source's connections
                 for(let targetsConnection of target.getServers()) {
                     for(let sourcesConnection of source.getServers()) {
                         targetsConnection.connectServer(sourcesConnection);
