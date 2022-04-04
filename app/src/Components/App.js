@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import Server from './Server.js';
 import Workload from './Workload.js'
 import ServerLayout from './ServerLayout.js';
@@ -17,13 +17,13 @@ function App() {
   const [servers, setServerList] = useState(serverList);
 
   function onServerUpdate(childData) {
-    console.log(childData)
     setServerList(childData);
   }
+  
   return (
     <div>
       <Workload servers={servers} updateServers={onServerUpdate}/>
-      {/* <ServerLayout servers={servers} updateServers={onServerUpdate}></ServerLayout> */}
+      <ServerLayout servers={servers} updateServers={onServerUpdate}></ServerLayout>
     </div>
   );
 }

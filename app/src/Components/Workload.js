@@ -1,17 +1,8 @@
 import React, { useState} from 'react';
 import './Workload.css';
 import * as Constants from '../Constants/Constants.js';
-import ServerLayout from './ServerLayout.js';
-
 
 function Workload(props) {
-
-    const [serverAWorkload, setWorkloadA] = useState(0);
-    const [serverBWorkload, setWorkloadB] = useState(0);
-    const [serverCWorkload, setWorkloadC] = useState(0);
-    const [serverDWorkload, setWorkloadD] = useState(0);
-    const [serverEWorkload, setWorkloadE] = useState(0);
-    const [serverFWorkload, setWorkloadF] = useState(0);
     const [serverList, setServers] = useState(props.servers);
 
     function onWorkloadChange(event) {
@@ -24,87 +15,52 @@ function Workload(props) {
             newWorkload = 0;
         }
 
-        /* 
-        I realize that there is a lot of repeated code here and this will not scale well with many servers,
-        but I was unable find another way to call hooks dynamically. Since there were only 6 servers, I decided
-        to settle with this approach.
-        */
+        //Update the servers when the workload of a server changes
         if(serverList && workloadFormat.test(newWorkload)) {
-            switch(serverName) {
-                case 'workloadA':
-                    serverList[0].changeWorkload(newWorkload);
-                    setWorkloadA(newWorkload);
-                    break;
+            let serverIndex = serverName.charCodeAt(serverName.length-1) - 'A'.charCodeAt(0);
+            let server = serverList[serverIndex];
+            let servers = serverList.slice();
 
-                case 'workloadB':
-                    serverList[1].changeWorkload(newWorkload);
-                    setWorkloadB(newWorkload);
-                    break;
-
-                case 'workloadC':
-                    serverList[2].changeWorkload(newWorkload);
-                    setWorkloadC(newWorkload);
-                    break;
-
-                case 'workloadD':
-                    serverList[3].changeWorkload(newWorkload);
-                    setWorkloadD(newWorkload);
-                    break;
-
-                case 'workloadE':
-                    serverList[4].changeWorkload(newWorkload);
-                    setWorkloadE(newWorkload);
-                    break;
-
-                case 'workloadF':
-                    serverList[5].changeWorkload(newWorkload);
-                    setWorkloadF(newWorkload);
-                    break;
-            }
-
+            server.setWorkload(newWorkload);
+            servers[serverIndex] = server;
+            setServers(servers)
             props.updateServers(serverList);
         }
-    }
-
-    function onServerUpdate(childData) {
-        props.updateServers(childData);
     }
 
     return (
         <div>
             <div className='workLoadInputs'>
                 <div className='form'>
-                    <p>Server A workload: {serverAWorkload}</p>
+                    <p>Server A workload: {serverList[0].getWorkload()}</p>
                     <input id='workloadA' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
 
                 <div className='form'>
-                    <p>Server B workload: {serverBWorkload}</p>
+                    <p>Server B workload: {serverList[1].getWorkload()}</p>
                     <input id='workloadB' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
 
                 <div className='form'>
-                    <p>Server C workload: {serverCWorkload}</p>
+                    <p>Server C workload: {serverList[2].getWorkload()}</p>
                     <input id='workloadC' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
 
                 <div className='form'>
-                    <p >Server D workload: {serverDWorkload}</p>
+                    <p >Server D workload: {serverList[3].getWorkload()}</p>
                     <input id='workloadD' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
 
                 <div className='form'>
-                    <p>Server E workload: {serverEWorkload}</p>
+                    <p>Server E workload: {serverList[4].getWorkload()}</p>
                     <input id='workloadE' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
 
                 <div className='form'>
-                    <p>Server F workload: {serverFWorkload}</p>
+                    <p>Server F workload: {serverList[5].getWorkload()}</p>
                     <input id='workloadF' onChange={onWorkloadChange} type='number' min='0' max={Constants.MAX_WORKLOAD}></input>
                 </div>
             </div>
-
-            <ServerLayout servers={serverList} updateServers={onServerUpdate}></ServerLayout>
         </div>
     );
 }

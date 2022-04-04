@@ -6,10 +6,6 @@ function DrawServers(props) {
     const [sourceServer, setSourceServer] = useState({name: '', x: 0, y: 0});
     const [serverList, setServers] = useState(props.servers);
 
-    useEffect(() => {
-        setServers(props.servers);
-    })
-
     function handleServerClick(event) {
         var servers = document.getElementsByClassName("server");
         var currentServerObj, sourceConnectedServers, targetConnectedServers;
@@ -79,7 +75,6 @@ function DrawServers(props) {
                     target.connectServer(server);
                 }
 
-
                 //for each of the target's connections, connect them to each of the source's connections
                 for(let targetsConnection of target.getServers()) {
                     for(let sourcesConnection of source.getServers()) {
@@ -97,7 +92,6 @@ function DrawServers(props) {
             setSourceServer({name: '', x:0, y:0});
         }
     }
-
     return (
         <div>
             <div className='row'>

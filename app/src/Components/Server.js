@@ -7,7 +7,7 @@ class Server {
         this.servers = servers;
     }
 
-    changeWorkload(value) {
+    setWorkload(value) {
         if(isNaN(value)) return;
 
         if(value >= 0 && value < Constants.MAX_WORKLOAD) {
@@ -38,10 +38,6 @@ class Server {
         return this.name;
     }
 
-    setWorkload(workload) {
-        this.workload = workload;
-    }
-
     /*
 
     This function rebalances the workload all servers connected to this current server.
@@ -55,24 +51,24 @@ class Server {
     */
     rebalanceWorkload() {
         var sum = 0;
-        for(let server of this.servers) {
+        for(let server of this.getServers()) {
             sum += parseInt(server.getWorkload());
         }
 
         sum += parseInt(this.getWorkload());
 
-        var quotient = Math.floor(sum / (this.servers.length + 1));
-        var remainder = sum % (this.servers.length + 1);
+        var quotient = Math.floor(sum / (this.getServers().length + 1));
+        var remainder = sum % (this.getServers().length + 1);
 
         if(remainder == 0) {
-            for(let server of this.servers) {
+            for(let server of this.getServers()) {
                 server.setWorkload(quotient);
             }
         }
 
         else {
             let counter = 0;
-            for(let server of this.servers) {
+            for(let server of this.getServers()) {
                 if(counter < remainder) {
                     server.setWorkload(quotient + 1);
                     counter++;
