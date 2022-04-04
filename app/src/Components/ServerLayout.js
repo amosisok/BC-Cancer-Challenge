@@ -1,6 +1,5 @@
 import './ServerLayout.css';
 import React, { useState, useEffect } from 'react';
-import Server from './Server';
 
 function DrawServers(props) {
     const [sourceServer, setSourceServer] = useState({name: '', x: 0, y: 0});
@@ -42,13 +41,18 @@ function DrawServers(props) {
             for(let i = 0; i < serverList.length; i++) {
                 if(serverList[i].getName() == sourceServer.name) {
                     source = serverList[i];
-                    currentServerObj = serverList[i];
+                    // currentServerObj = serverList[i];
                 }
 
                 else if(serverList[i].getName() == event.currentTarget.id) {
                     target = serverList[i];
-                    targetServerObj = serverList[i];
+                    // targetServerObj = serverList[i];
                 }
+            }
+
+            //We can only connect to a server that is flashing blue. Click again on source server to cancel connection.
+            if(event.currentTarget.style.animation === '' && event.currentTarget.id !== source.getName()) {
+                return;
             }
 
             let targetX, targetY;
@@ -61,38 +65,27 @@ function DrawServers(props) {
             }
             
             // Add selected server to source server's list of servers
-
-            sourceConnectedServers = currentServerObj.getServers().map(elem => elem.name);
-            if(targetServerObj) {
-                targetConnectedServers = targetServerObj.getServers().map(elem => elem.name);
+            sourceConnectedServers = source.getServers().map(elem => elem.name);
+            if(target) {
+                targetConnectedServers = target.getServers().map(elem => elem.name);
             }
 
             if(target && !sourceConnectedServers.includes(target.getName())) {
-
-                //connect source to all of the targets connected servers
-
                 source.connectServer(target);
                 target.connectServer(source);
 
-                // for each of b's connections, excluding b and any already connected servers, connect them to c
-                for(let server of currentServerObj.getServers()) {
-                    // if(server.getName() !== currentServerObj.getName() && !targetConnectedServers.includes(server.getName())) {
-                        server.connectServer(target);
-                        target.connectServer(server);
-                    // }
+                // for each of source's connections, excluding itself and any already connected servers, connect them to the target
+                for(let server of source.getServers()) {
+                    server.connectServer(target);
+                    target.connectServer(server);
                 }
 
 
-                // // for each of c's connections, connect them to b's connections
+                //for each of the target's connections, connect them to each of the source's connections
                 for(let targetsConnection of target.getServers()) {
                     for(let sourcesConnection of source.getServers()) {
-                        // if(!sourceConnectedServers.includes(targetsConnection.getName() && targetsConnection.getName() !== target.getName())) {
-                            targetsConnection.connectServer(sourcesConnection);
-                        // }
-
-                        // if(!targetConnectedServers.includes(sourcesConnection.getName() && sourcesConnection.getName() !== source.getName())) {
-                            sourcesConnection.connectServer(targetsConnection);
-                        // }
+                        targetsConnection.connectServer(sourcesConnection);
+                        sourcesConnection.connectServer(targetsConnection);
                     }
                     source.connectServer(targetsConnection);
                     targetsConnection.connectServer(source);
@@ -184,8 +177,6 @@ function createLineElement(x, y, length, angle) {
                + 'width: ' + length + 'px; '
                + '-moz-transform: rotate(' + angle + 'rad); ' 
                + '-webkit-transform: rotate(' + angle + 'rad); '
-               + '-o-transform: rotate(' + angle + 'rad); '  
-               + '-ms-transform: rotate(' + angle + 'rad); '  
                + 'position: absolute; '
                + 'top: ' + y + 'px; '
                + 'left: ' + x + 'px; '

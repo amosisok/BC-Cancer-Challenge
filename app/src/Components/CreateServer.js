@@ -20,10 +20,15 @@ function CreateServers(props) {
     function onWorkloadChange(event) {
       let serverName = event.currentTarget.id;
   
-      const positiveNumbers = new RegExp(Constants.WORKLOAD_REGEX);
+      const workloadFormat = new RegExp(Constants.WORKLOAD_REGEX);
       let newWorkload = event.currentTarget.value;
+
+      if(newWorkload === "") {
+          newWorkload = 0;
+      }
   
-      if(serverList && newWorkload && positiveNumbers.test(newWorkload)) {
+      if(serverList && workloadFormat.test(newWorkload)) {
+
         switch(serverName) {
             case 'workloadA':
                 serverList[0].changeWorkload(newWorkload);
@@ -99,9 +104,9 @@ function CreateServers(props) {
         </div>
   
         <ServerLayout servers={props.servers} updateServers={onServerUpdate}></ServerLayout>
-  
       </div>
     );
   }
 
   export default CreateServers;
+  

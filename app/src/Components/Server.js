@@ -1,3 +1,5 @@
+import * as Constants from '../Constants/Constants.js';
+
 class Server {
     constructor(name, workload, servers) {
         this.name = name;
@@ -8,7 +10,7 @@ class Server {
     changeWorkload(value) {
         if(isNaN(value)) return;
 
-        if(value >= 0 && value < 9999999999) {
+        if(value >= 0 && value < Constants.MAX_WORKLOAD) {
             this.workload = value;
         }
 
@@ -40,6 +42,17 @@ class Server {
         this.workload = workload;
     }
 
+    /*
+
+    This function rebalances the workload all servers connected to this current server.
+    It does so by dividing the total workload of all the servers by the total number of servers, giving us a starting workload for each server.
+    We then calculate the remainder and then evenly distribute it among the servers, starting from the first.
+    
+    If the remainder is 0, there is nothing to distribute so we can set the workload of all servers to the starting workload.
+    Otherwise, we distribute it by simply adding 1 to each of the servers until the remainder is all used up.
+    When this is complete, we have a balanced workload for all connected servers.
+    
+    */
     rebalanceWorkload() {
         var sum = 0;
         for(let server of this.servers) {
@@ -48,19 +61,29 @@ class Server {
 
         sum += parseInt(this.getWorkload());
 
-        var quotient = Math.round(sum/(this.servers.length + 1));
-        var remainder = sum % this.servers.length + 1;
+        var quotient = Math.floor(sum / (this.servers.length + 1));
+        var remainder = sum % (this.servers.length + 1);
 
-        // console.log('quotient', quotient);
-        // console.log('remain', remainder);
-
-        for(let server of this.servers) {
-            server.setWorkload(quotient);
+        if(remainder == 0) {
+            for(let server of this.servers) {
+                server.setWorkload(quotient);
+            }
         }
 
-        Number.isInteger(sum/(this.servers.length + 1)) ? this.setWorkload(quotient) : this.setWorkload(remainder)
+        else {
+            let counter = 0;
+            for(let server of this.servers) {
+                if(counter < remainder) {
+                    server.setWorkload(quotient + 1);
+                    counter++;
+                }
+                else {
+                    server.setWorkload(quotient);
+                }
+            }
+        }
 
-        // 5/3
+        this.setWorkload(quotient);
     }
 }
 

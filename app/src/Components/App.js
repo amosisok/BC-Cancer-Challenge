@@ -16,7 +16,7 @@ function App() {
   const [servers, setServerList] = useState(serverList);
 
   function onServerUpdate(childData) {
-    console.log(childData)
+    // console.log(childData)
     setServerList(childData);
   }
 
