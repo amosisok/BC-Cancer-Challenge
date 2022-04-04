@@ -4,42 +4,34 @@
 
 ## Description
 
+The task was to create a set of six servers and implement an algorithm that balances the workload of all connected servers.
+
 #### Components
 App.js - The main component of the program. Displays the other components.
 
-
 Workload.js - This component contains the workload inputs for each of the servers.
-
 
 ServerLayout.js - This component draws the servers and the connections between them.
 
 #### Server Design and Implementation
 
-The task was to create a set of six servers and implement an algorithm that balances the workload of all connected servers.
-
-To represent a server, I created a Server class with the following:
-
-Fields:
-- name (the name of the server)
-- workload (an integer that represents the current workload of a server)
-- servers (an array of server objects that represent the servers that it is connected to)
+To represent a server, I created a Server class, since all servers would share the same fields and would want to call the same methods. Each instance of a server would store its name, workload and list of connected servers.
 
 Methods:
-- changeWorkload(value): Edit the server's workload
 - connectServer(server): Connect the current server to the server that is being passed in
 - rebalance(): Rebalance the workload of all of the servers that the current server is connected to, including itself
 - Getters/Setters
 
-A connection between two servers is bidirectional. If A connects to B, B is also connected to A.
+A connection between two servers is bidirectional. If A is connected to B, B is also connected to A.
 A server does not need to have a direct connection from source to target in order to be connected to the target.
 
-As an example, let B be connected to C. If we connected A to B, A is also connected to C, although we did not explicitly connect A to C.
+As an example, let B be connected to C. If we connect A to B, then A is also connected to C, although we did not explicitly connect A to C.
 
 #### User Interface Design
 
-- Each server is represented by a box containing its name and workload.
+- Each server is represented by a square box containing its name and workload.
 - Connections between servers are indicated by a line between them.
-- Each server has an input field to set its workload.
+- Each server has a corresponding input field to set its workload.
 - To connect a a source and target server, click on a server to designate as the source server.
 - The servers that are available to connect to will start flashing blue. If a server is not available to connect, it is already connected to the source server.
 - Choosing a target server draws a line between the two servers, connecting them.
@@ -56,13 +48,17 @@ As an example, let B be connected to C. If we connected A to B, A is also connec
  
  Let c be the number of servers that s is connected to.
  
-1) Sum the workload of all the servers that are connected to s.
-2) Calculate the floor of the sum divided by (c+1) to to obtain a quotient q. => Math.floor(sum/(c+1))
+1) Sum the workload of all the servers that are connected to s and the workload of s.
+2) Calculate the floor of the sum divided by (c+1) to to obtain a quotient q.
 3) Mod the sum by (c+1) to obtain a remainder r.
 4)  If the remainder is 0, the workload of all servers will be equal, so we can set the workload of all servers to the quotient.
     Otherwise, we distribute the remainder by adding 1 to each of the connected server's workload until the remainder is all used up.
     When this is complete, we have a balanced workload for all connected servers.
    
+## Discussion
+There were several things I took into consideration while making this application, including usability and scalability. One main issue was deciding how a user would connect 2 servers. My inital thought was to have dropdown for each server and have them select a server from a list. However, this would not scale well, as adding n servers would increase the size of each dropdown and require n additional dropdowns. I wanted the connection process to be easy and intuitive even when there were many servers on the screen at once. This led to my current design, which was to simply click the source and target server to connect the two.
+
+Some other software design principles I utilized included the Single-Responsiblity princple and Open-Closed principle. Each component I have is responsible for a single part of the program, encapsulating its functionality. As a result, extending the program to be allow users to add servers or remove existing connections between servers would not require many modifications to existing code.
 
 ## Installation
 1) Clone the repo.
@@ -72,3 +68,6 @@ As an example, let B be connected to C. If we connected A to B, A is also connec
 The program will be running on http://localhost:3000/
 
 ## Usage
+1) Enter the workload for the servers in the corresponding input fields.
+2) Begin by selecting a server as the source server. The servers available for connection will flash blue.
+3) Choose the target server to connect a connection to the source. The workload will now be balanced between the connected servers.
