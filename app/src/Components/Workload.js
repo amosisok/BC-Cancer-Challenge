@@ -23,8 +23,8 @@ function Workload(props) {
 
             server.setWorkload(newWorkload);
             servers[serverIndex] = server;
-            setServers(servers)
-            props.updateServers(serverList);
+            setServers(servers);
+            props.updateServers(servers);
         }
     }
 

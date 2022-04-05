@@ -33,8 +33,9 @@ function DrawServers(props) {
 
         //Choosing the target server
         else if(sourceServer.x != 0 && sourceServer.y != 0) {
-
+            
             var source, target;
+            var updatedServers = serverList.slice();
             for(let i = 0; i < serverList.length; i++) {
                 if(serverList[i].getName() == sourceServer.name) {
                     source = serverList[i];
@@ -85,7 +86,8 @@ function DrawServers(props) {
                 }
 
                 source.rebalanceWorkload();
-                props.updateServers(serverList);
+                setServers(updatedServers);
+                props.updateServers(updatedServers);
             }
 
             setSourceServer({name: '', x:0, y:0});
