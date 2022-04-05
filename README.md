@@ -60,10 +60,15 @@ There were several things I took into consideration while making this applicatio
 
 Some other software design principles I utilized included the Single-Responsiblity princple and Open-Closed principle. Each component I have is responsible for a single part of the program, encapsulating its functionality. As a result, extending the program to be allow users to add servers or remove existing connections between servers would not require many modifications to existing code.
 
-## Installation
-1) Clone the repo.
-2) Navigate to the app directory and install the dependencies using "npm install".
-3) Run the program using "npm start".
+## How to run
+
+I have deployed the app to Heroku, so the easiest way to run the program is by visiting https://amos-ko-bc-cancer-challenge.herokuapp.com/. 
+
+To run the program locally:
+1) Ensure node.js is installed.
+2) Clone or download the repo.
+3) In the root directory, install the packages using "npm install".
+4) Run the program using "npm start".
 
 The program will be running on http://localhost:3000/
 
