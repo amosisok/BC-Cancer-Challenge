@@ -75,4 +75,4 @@ The program will be running on http://localhost:3000/
 ## Usage
 1) Enter the workload for the servers in the corresponding input fields.
 2) Begin by selecting a server as the source server. The servers available for connection will flash blue.
-3) Choose the target server to connect a connection to the source. The workload will now be balanced between the connected servers.
+3) Choose the target server to create a connection to the source. The workload will now be balanced between the connected servers.
